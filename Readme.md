@@ -13,6 +13,4 @@
 
 ### Para ver notas publicas no se requiere autenticación
 
-
-
 ##### Al final esto se remplazara por los pasos de instalación
