@@ -25,7 +25,12 @@ class Server {
     }
 
     async connectDatabase() {
-        await DBConnection();
+        try {
+            await DBConnection();
+        } catch (err) {
+            console.log(err);
+        }
+
     }
 
     listen() {

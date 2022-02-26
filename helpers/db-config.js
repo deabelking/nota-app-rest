@@ -8,8 +8,9 @@ const DBConnection = async() => {
         console.log(err);
         throw Error("Error al conectar la BBDD");
     }
-
 }
 
 
-module.exports = { DBConnection };
+module.exports = {
+    DBConnection
+};

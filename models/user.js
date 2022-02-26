@@ -21,11 +21,15 @@ const UserSchema = Schema({
         default: 'user'
     },
     photo: { type: String },
-    public: { type: Boolean, default: false },
-    state: { type: Boolean, default: true },
+    active: { type: Boolean, default: true },
     /**Indica si el usuario se creo desde google*/
     google: { type: Boolean, default: false }
 
 });
 
+UserSchema.methods.toJSON = function() {
+    const { __v, _id, google, password, ...rest } = this.toObject();
+    rest.id = _id;
+    return rest;
+}
 module.exports = model('users', UserSchema)
