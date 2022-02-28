@@ -8,6 +8,8 @@ class Server {
     constructor() {
         this.app = express();
         this.routesPaths = {
+            auth: "/api/auth",
+            notes: "/api/notes",
             users: "/api/users"
         };
         this.midleware();
@@ -22,6 +24,8 @@ class Server {
     }
     routes() {
         this.app.use(this.routesPaths.users, require('../routes/users'));
+        this.app.use(this.routesPaths.notes, require('../routes/notes'));
+        this.app.use(this.routesPaths.auth, require('../routes/auth'));
     }
 
     async connectDatabase() {

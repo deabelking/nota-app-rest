@@ -58,9 +58,8 @@ const existsEntityById = (Entity) => {
 
     return async(req = request, res = response, next) => {
         const { id } = req.params;
-        const user = await Entity.findById(id);
-        console.log(user);
-        if (!user) {
+        const entity = await Entity.findById(id);
+        if (!entity) {
             return res.status(401).json({ msg: `No existe un registro asociado al id :${id}` });
         }
         next();

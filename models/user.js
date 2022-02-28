@@ -23,13 +23,16 @@ const UserSchema = Schema({
     photo: { type: String },
     active: { type: Boolean, default: true },
     /**Indica si el usuario se creo desde google*/
-    google: { type: Boolean, default: false }
+    google: { type: Boolean, default: false },
+
+    token: { type: String, default: "" },
+    created: { type: Number, default: Date.now() }
 
 });
 
 UserSchema.methods.toJSON = function() {
-    const { __v, _id, google, password, ...rest } = this.toObject();
+    const { __v, _id, google, token, password, ...rest } = this.toObject();
     rest.id = _id;
     return rest;
 }
-module.exports = model('users', UserSchema)
+module.exports = model('User', UserSchema)
