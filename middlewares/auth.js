@@ -16,7 +16,7 @@ const tokenValido = async(req = request, res = response, next) => {
         }
 
     } catch (msg) {
-        return res.status(401).json({ msg });
+        return res.status(400).json({ msg });
     }
     next();
 }

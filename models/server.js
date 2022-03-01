@@ -10,7 +10,8 @@ class Server {
         this.routesPaths = {
             auth: "/api/auth",
             notes: "/api/notes",
-            users: "/api/users"
+            users: "/api/users",
+            tags: "/api/tags"
         };
         this.midleware();
         this.routes();
@@ -23,9 +24,11 @@ class Server {
         this.app.use(express.json());
     }
     routes() {
-        this.app.use(this.routesPaths.users, require('../routes/users'));
-        this.app.use(this.routesPaths.notes, require('../routes/notes'));
         this.app.use(this.routesPaths.auth, require('../routes/auth'));
+        this.app.use(this.routesPaths.notes, require('../routes/notes'));
+        this.app.use(this.routesPaths.users, require('../routes/users'));
+        this.app.use(this.routesPaths.tags, require('../routes/tags'));
+
     }
 
     async connectDatabase() {

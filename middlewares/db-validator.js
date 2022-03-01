@@ -15,7 +15,7 @@ const requiredFields = (...fields) => {
         });
 
         if (missingFields.length !== 0) {
-            return res.status(401)
+            return res.status(400)
                 .json({ msg: `Faltan los campos:${missingFields}` });
         }
         next();
@@ -33,12 +33,12 @@ const uniqueFields = (Entity, ...fields) => {
                 [field]: value
             };
             const entity = await Entity.findOne(query);
-            if (entity && entity._id !== id) {
+            if (entity && entity._id.toString() !== id) {
                 msg += `Ya existe un registro en el campo ${field} con valor ${value}\n`;
             }
         }
         if (msg !== '') {
-            return res.status(401)
+            return res.status(400)
                 .json({ msg: msg.trimEnd('\n') });
         }
         next();
@@ -55,12 +55,22 @@ const isMongoValidId = (req = request, res = response, next) => {
 }
 
 const existsEntityById = (Entity) => {
-
     return async(req = request, res = response, next) => {
         const { id } = req.params;
         const entity = await Entity.findById(id);
-        if (!entity) {
-            return res.status(401).json({ msg: `No existe un registro asociado al id :${id}` });
+        if (!entity || !entity.active) {
+            return res.status(400).json({ msg: `No existe un registro asociado al id :${id}` });
+        }
+        req.entity = entity;
+        next();
+    }
+}
+
+const isUserOwnerDocument = (keyId = 'user') => {
+    return (req = request, res = response, next) => {
+        const entity = req.entity;
+        if (!entity || !entity.active || !entity[keyId].equals(req.user._id)) {
+            return res.status(400).json({ msg: 'No tiene permiso para esta acción' });
         }
         next();
     }
@@ -71,5 +81,6 @@ module.exports = {
     existsEntityById,
     isMongoValidId,
     requiredFields,
-    uniqueFields
+    uniqueFields,
+    isUserOwnerDocument
 }

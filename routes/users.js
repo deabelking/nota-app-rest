@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { getUsers, createUser, getUser, updateUser, deleteUser, updatePasswordUser } = require('../controllers');
-const { requiredFields, uniqueFields, isMongoValidId, existsEntityById } = require('../middlewares');
+const { requiredFields, uniqueFields, isMongoValidId, existsEntityById, isUserOwnerDocument } = require('../middlewares');
 const { tokenValido } = require('../middlewares/auth');
 const { userContainsRoles } = require('../middlewares/role-validator');
 const { User } = require('../models');
@@ -20,7 +20,7 @@ myRouter.get('/:id', [
     isMongoValidId,
     tokenValido,
     existsEntityById(User),
-    userContainsRoles('admin', 'self-user'),
+    isUserOwnerDocument('_id')
 ], getUser);
 
 
@@ -34,13 +34,15 @@ myRouter.post('/', [
 myRouter.put("/:id", [
     isMongoValidId,
     tokenValido,
-    userContainsRoles('self-user'),
+    existsEntityById(User),
+    isUserOwnerDocument('_id')
 ], updateUser)
 
 myRouter.put("/password/:id", [
     isMongoValidId,
     tokenValido,
-    userContainsRoles('self-user'),
+    existsEntityById(User),
+    isUserOwnerDocument('_id')
 ], updatePasswordUser)
 
 myRouter.delete('/:id', [
