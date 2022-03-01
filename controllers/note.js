@@ -86,7 +86,7 @@ const searchNote = async(req = request, res = response) => {
                 }
                 query = { $and: queryAnd };
             } else {
-                res.status(400).json({ msg: 'usuario desconocido' });
+                return res.status(400).json({ msg: 'usuario desconocido' });
             }
             break;
         case 'tag':
@@ -100,7 +100,7 @@ const searchNote = async(req = request, res = response) => {
                 }
                 query = { $and: queryAnd, $or: queryOr };
             } else {
-                res.status(400).json({ msg: 'tag desconocido' });
+                return res.status(400).json({ msg: 'tag desconocido' });
             }
             break;
         case 'name':
@@ -113,8 +113,7 @@ const searchNote = async(req = request, res = response) => {
             query = { $or: queryOr, $and: queryAnd };
             break;
         default:
-            res.status(400).json({ msg: 'Busqueda no definida' });
-            break;
+            return res.status(400).json({ msg: 'Busqueda no definida' });
     }
     const [total, notes] = await Promise.all(
         [
@@ -126,7 +125,7 @@ const searchNote = async(req = request, res = response) => {
             .populate('tags', 'name')
         ]
     )
-    res.json({ total, notes });
+    return res.json({ total, notes });
 
 }
 module.exports = {

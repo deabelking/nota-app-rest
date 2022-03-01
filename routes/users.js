@@ -41,6 +41,7 @@ myRouter.put("/:id", [
 myRouter.put("/password/:id", [
     isMongoValidId,
     tokenValido,
+    requiredFields('password', 'oldPassword'),
     existsEntityById(User),
     isUserOwnerDocument('_id')
 ], updatePasswordUser)

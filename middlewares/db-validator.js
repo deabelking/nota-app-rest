@@ -1,10 +1,8 @@
 const { response, request } = require("express");
-const res = require("express/lib/response");
 const mongoose = require('mongoose');
 
 
 const requiredFields = (...fields) => {
-    console.log(fields);
     return (req = request, res = response, next) => {
         const body = req.body;
         const missingFields = [];
