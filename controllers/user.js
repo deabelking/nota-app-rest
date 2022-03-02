@@ -2,6 +2,8 @@ const { response, request } = require("express");
 const { User } = require('../models');
 const bcrypt = require('bcryptjs');
 const { excludeEmpty, emailValidate } = require("../helpers/data-validate");
+const cloudinary = require('cloudinary').v2;
+cloudinary.config(process.env.CLOUDINARY_URL);
 
 const getUsers = async(req = request, res = response) => {
     const { start = 0, end = 5, active = 1 } = req.query;
@@ -44,6 +46,27 @@ const updateUser = async(req = request, res = response) => {
     res.json(user);
 }
 
+const updateImage = async(req = request, res = response) => {
+    const { id } = req.params; //req.files.archivo    
+    const user = await User.findById(id);
+    try {
+        const { tempFilePath } = req.files.photo;
+        if (user.photo) {
+            const imageSplit = user.photo.split('/');
+            const name = imageSplit[imageSplit.length - 1];
+            const [cloudinaryId] = name.split('.');
+            await cloudinary.uploader.destroy(cloudinaryId);
+        }
+        const { secure_url } = await cloudinary.uploader.upload(tempFilePath);
+        user.photo = secure_url;
+        await user.save();
+        return res.json(user);
+    } catch (err) {
+        return res.status(500).json({ msg: "hey algo paso," });
+    }
+
+}
+
 const updatePasswordUser = async(req = request, res = response) => {
     const { id } = req.params;
     const { password = '', oldPassword = '' } = req.body;
@@ -76,4 +99,5 @@ module.exports = {
     getUsers,
     updateUser,
     updatePasswordUser,
+    updateImage
 }

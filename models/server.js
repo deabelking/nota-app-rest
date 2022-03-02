@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require("cors");
+const fileUpload = require('express-fileupload')
 const { DBConnection } = require('../helpers/db-config');
 
 
@@ -22,6 +23,11 @@ class Server {
     midleware() {
         this.app.use(cors());
         this.app.use(express.json());
+        this.app.use(fileUpload({
+            useTempFiles: true,
+            tempFileDir: '/tmp/',
+            createParentPath: true
+        }));
     }
     routes() {
         this.app.use(this.routesPaths.auth, require('../routes/auth'));
